@@ -1,191 +1,265 @@
+import enum
+from datetime import datetime
+from typing import Optional
 
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KTX Hub | खाटू टीम एक्सरसाइज</title>
-    <style>
-        *{box-sizing:border-box}
-        :root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#c9d1d9;--muted:#8b949e;--accent:#58a6ff;--success:#238636}
-        body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:0}
-        
-        /* OTP Auth Modal/Screen */
-        #authScreen{display:flex;justify-content:center;align-items:center;width:100vw;height:100vh;background:radial-gradient(circle,#161b22 0%,#0d1117 100%);position:fixed;top:0;left:0;z-index:1000;padding:20px}
-        .auth-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:35px 25px;width:100%;max-width:380px;box-shadow:0 16px 40px rgba(0,0,0,0.6);text-align:center}
-        .logo-badge{width:55px;height:55px;margin:0 auto 12px auto;border-radius:50%;background:linear-gradient(135deg,var(--accent),#1f6feb);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;box-shadow:0 0 15px rgba(88,166,255,0.4)}
-        .auth-card h1{font-size:22px;color:var(--accent);margin:0 0 2px 0}
-        .auth-card p{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:20px}
-        .form-group{margin-bottom:14px;text-align:left}
-        .form-group label{display:block;font-size:12px;color:var(--text);margin-bottom:5px;font-weight:600}
-        .form-group input{width:100%;padding:10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;outline:none;text-align:center;letter-spacing:1px}
-        .form-group input:focus{border-color:var(--accent)}
-        .btn-auth{width:100%;padding:10px;background:var(--success);color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;margin-top:10px}
-        .btn-auth:hover{background:#2ea043}
+from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from sqlalchemy import (
+    create_engine,
+    Column,
+    Integer,
+    String,
+    Text,
+    Float,
+    Boolean,
+    ForeignKey,
+    DateTime,
+    Enum,
+)
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, relationship, Session
 
-        /* Dashboard Screen */
-        #dashboardScreen{display:none;width:100%;min-height:100vh;flex-direction:column}
-        .navbar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 25px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
-        .nav-center{display:flex;align-items:center;gap:10px;margin:0 auto;}
-        .nav-logo-sm{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#1f6feb);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff}
-        .nav-title{font-size:15px;font-weight:800;color:var(--text);margin:0;line-height:1.1}
-        .nav-desc{font-size:8px;color:var(--muted);margin:0;text-transform:uppercase;letter-spacing:0.5px}
-        
-        .nav-right{display:flex;align-items:center;gap:10px}
-        .user-badge{background:var(--bg);border:1px solid var(--border);padding:5px 12px;border-radius:20px;font-size:12px;color:var(--accent);font-weight:600}
-        .btn-logout{background:none;border:1px solid var(--border);color:#ff7b72;padding:5px 10px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:600}
-        .btn-logout:hover{background:rgba(255,123,114,0.1)}
+# ==========================================
+# 1. DATABASE CONFIGURATION & ENGINE
+# ==========================================
+DATABASE_URL = "sqlite:///./marketplace.db"
 
-        /* Main Content */
-        .main{max-width:1200px;margin:25px auto;padding:0 20px;width:100%}
-        .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:25px}
-        .card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;display:flex;flex-direction:column;justify-content:space-between}
-        .card h2{font-size:15px;color:var(--text);margin:0 0 12px 0;border-bottom:1px solid var(--border);padding-bottom:10px}
-        .card label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
-        .card textarea{width:100%;padding:10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;resize:vertical;min-height:90px;outline:none}
-        .card textarea:focus{border-color:var(--accent)}
-        .btn-act{width:100%;padding:10px;background:#1f6feb;color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;margin-top:12px}
-        .btn-act:hover{background:var(--accent);color:#0d1117}
-        .output{margin-top:12px;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;font-size:13px;line-height:1.5;display:none;white-space:pre-wrap;max-height:180px;overflow-y:auto}
-        
-        .sub-box{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px 25px;display:flex;justify-content:space-between;align-items:center}
-        .sub-box h3{margin:0 0 4px 0;font-size:15px;color:var(--text)}
-        .sub-box p{margin:0;font-size:12px;color:var(--muted)}
-        .badge-soon{background:rgba(88,166,255,0.1);color:var(--accent);border:1px solid var(--accent);padding:5px 12px;border-radius:15px;font-size:11px;font-weight:600;text-transform:uppercase}
+engine = create_engine(
+    DATABASE_URL, connect_args={"check_same_thread": False}
+)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
 
-        @media(max-width:900px){.grid{grid-template-columns:1fr}.sub-box{flex-direction:column;align-items:flex-start;gap:10px}}
-    </style>
-</head>
-<body>
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-    <!-- Mobile Number & OTP Verification Gate -->
-    <div id="authScreen">
-        <div class="auth-card">
-            <div class="logo-badge">KTX</div>
-            <h1>KTX Hub</h1>
-            <p>खाटू टीम एक्सरसाइज</p>
-            
-            <div class="form-group" id="phoneGroup">
-                <label>Enter Mobile Number</label>
-                <input type="tel" id="phoneNumber" placeholder="9876543210" maxlength="10">
-                <button class="btn-auth" onclick="sendOTP()">Get OTP</button>
-            </div>
+# ==========================================
+# 2. DATABASE MODELS & SCHEMAS
+# ==========================================
+class UserRole(str, enum.Enum):
+    CLIENT = "client"
+    CONTRACTOR = "contractor"
+    PROGRAMMER = "programmer"
+    ENGINEER = "engineer"
+    LABOR = "labor"
+    DOCTOR = "doctor"
+    TEACHER = "teacher"
+    ADMIN = "admin"
 
-            <div class="form-group" id="otpGroup" style="display:none;">
-                <label>Enter 4-Digit OTP (Hint: Any 4 digits like 1234)</label>
-                <input type="text" id="otpInput" placeholder="1234" maxlength="4">
-                <button class="btn-auth" onclick="verifyOTP()">Verify & Sign In</button>
-            </div>
-        </div>
-    </div>
+class UserTier(str, enum.Enum):
+    BRONZE = "Bronze"
+    SILVER = "Silver"
+    GOLD = "Gold"
+    PLATINUM = "Platinum"
 
-    <!-- Dashboard Screen -->
-    <div id="dashboardScreen">
-        <header class="navbar">
-            <div style="width: 80px;"></div>
-            <div class="nav-center">
-                <div class="nav-logo-sm">KTX</div>
-                <div><h2 class="nav-title">KTX Hub</h2><p class="nav-desc">खाटू टीम एक्सरसाइज</p></div>
-            </div>
-            <div class="nav-right">
-                <div class="user-badge" id="uBadge">User</div>
-                <button class="btn-logout" onclick="doLogout()">Sign Out</button>
-            </div>
-        </header>
+class ServiceCategory(str, enum.Enum):
+    WEB_DEV = "Web Development"
+    MOBILE_DEV = "Mobile App Development"
+    GRAPHIC_DESIGN = "Graphic Design"
+    PLUMBING_ELECTRICAL = "Plumbing & Electrical"
+    HOME_REPAIR = "Home Repair & Construction"
+    TUTORING = "Tutoring & Education"
+    MEDICAL = "Medical Consultation"
+    LEGAL = "Legal Advisory"
 
-        <div class="main">
-            <div class="grid">
-                <div class="card">
-                    <div><h2>Fitness & Gym Coach</h2><label>Ask fitness query:</label><textarea id="qFit" placeholder="Workout routine..."></textarea></div>
-                    <div><button class="btn-act" onclick="askAI('fit')">Generate</button><div id="rFit" class="output"></div></div>
-                </div>
-                <div class="card">
-                    <div><h2>Finance & Wealth</h2><label>Ask financial query:</label><textarea id="qFin" placeholder="Investment tips..."></textarea></div>
-                    <div><button class="btn-act" onclick="askAI('fin')">Generate</button><div id="rFin" class="output"></div></div>
-                </div>
-                <div class="card">
-                    <div><h2>Web Engineering</h2><label>Ask coding query:</label><textarea id="qWeb" placeholder="HTML/CSS layout..."></textarea></div>
-                    <div><button class="btn-act" onclick="askAI('web')">Generate</button><div id="rWeb" class="output"></div></div>
-                </div>
-            </div>
+class User(Base):
+    __tablename__ = "users"
 
-            <div class="sub-box">
-                <div><h3>KTX Enterprise Pro Tier</h3><p>Upcoming cloud storage & high-throughput modules.</p></div>
-                <div><span class="badge-soon">Coming Soon</span></div>
-            </div>
-        </div>
-    </div>
+    id = Column(Integer, primary_key=True, index=True)
+    phone = Column(String(15), unique=True, index=True, nullable=False)
+    name = Column(String(100), default="New User")
+    email = Column(String(100), unique=True, nullable=True)
+    role = Column(Enum(UserRole), default=UserRole.CLIENT)
+    tier = Column(Enum(UserTier), default=UserTier.BRONZE)
+    rating = Column(Float, default=5.0)
+    points = Column(Integer, default=100)
+    is_verified = Column(Boolean, default=False)
+    profile_bio = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
 
-    <script>
-        window.onload = function() {
-            let phone = localStorage.getItem('ktx_phone');
-            if(phone){ 
-                document.getElementById('uBadge').innerText = "+91 " + phone; 
-                document.getElementById('authScreen').style.display = 'none'; 
-                document.getElementById('dashboardScreen').style.display = 'flex'; 
-            }
+    services = relationship("Service", back_populates="owner")
+    bids = relationship("Bid", back_populates="bidder")
+
+class Service(Base):
+    __tablename__ = "services"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(200), index=True, nullable=False)
+    category = Column(Enum(ServiceCategory), index=True, nullable=False)
+    description = Column(Text, nullable=False)
+    budget = Column(Float, nullable=False)
+    location = Column(String(100), default="Remote / All India")
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    owner_id = Column(Integer, ForeignKey("users.id"))
+    owner = relationship("User", back_populates="services")
+    bids = relationship("Bid", back_populates="service")
+
+class Bid(Base):
+    __tablename__ = "bids"
+
+    id = Column(Integer, primary_key=True, index=True)
+    service_id = Column(Integer, ForeignKey("services.id"))
+    bidder_id = Column(Integer, ForeignKey("users.id"))
+    amount = Column(Float, nullable=False)
+    proposal_text = Column(Text, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    service = relationship("Service", back_populates="bids")
+    bidder = relationship("User", back_populates="bids")
+
+# Create all tables automatically
+Base.metadata.create_all(bind=engine)
+
+# ==========================================
+# 3. PYDANTIC REQUEST SCHEMAS
+# ==========================================
+class SendOTPRequest(BaseModel):
+    phone: str
+
+class VerifyOTPRequest(BaseModel):
+    phone: str
+    otp: str
+    role: Optional[UserRole] = UserRole.CLIENT
+    name: Optional[str] = "Pro Member"
+
+class ServiceCreateRequest(BaseModel):
+    title: str
+    category: ServiceCategory
+    description: str
+    budget: float
+    location: str
+    owner_id: int
+
+class BidCreateRequest(BaseModel):
+    service_id: int
+    bidder_id: int
+    amount: float
+    proposal_text: str
+
+# ==========================================
+# 4. FASTAPI APP & ROUTES
+# ==========================================
+app = FastAPI(
+    title="Enterprise Super Marketplace All-In-One",
+    description="Unified backend engine for multi-category services",
+    version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.post("/api/auth/send-otp", tags=["Authentication"])
+async def send_otp(req: SendOTPRequest):
+    if len(req.phone) < 10:
+        raise HTTPException(status_code=400, detail="Invalid mobile number")
+    return {"status": "success", "message": "OTP sent successfully", "demo_otp": "1234"}
+
+@app.post("/api/auth/verify-otp", tags=["Authentication"])
+async def verify_otp(req: VerifyOTPRequest, db: Session = Depends(get_db)):
+    if req.otp != "1234":
+        raise HTTPException(status_code=400, detail="Invalid OTP code")
+    
+    user = db.query(User).filter(User.phone == req.phone).first()
+    if not user:
+        user = User(
+            phone=req.phone,
+            name=req.name,
+            role=req.role,
+            tier=UserTier.BRONZE,
+            points=100
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    
+    return {
+        "status": "success",
+        "user": {
+            "id": user.id,
+            "name": user.name,
+            "phone": user.phone,
+            "role": user.role,
+            "tier": user.tier,
+            "points": user.points,
+            "rating": user.rating
         }
+    }
 
-        function sendOTP() {
-            let phone = document.getElementById('phoneNumber').value.trim();
-            if(phone.length < 10) {
-                alert("Please enter a valid 10-digit mobile number!");
-                return;
-            }
-            // Seamless simulated OTP flow
-            alert("OTP sent successfully! (Demo OTP: 1234)");
-            document.getElementById('phoneGroup').style.display = 'none';
-            document.getElementById('otpGroup').style.display = 'block';
-        }
+@app.post("/api/services", tags=["Marketplace"])
+async def create_service(req: ServiceCreateRequest, db: Session = Depends(get_db)):
+    service = Service(
+        title=req.title,
+        category=req.category,
+        description=req.description,
+        budget=req.budget,
+        location=req.location,
+        owner_id=req.owner_id
+    )
+    db.add(service)
+    db.commit()
+    db.refresh(service)
+    return {"status": "success", "service_id": service.id, "message": "Service listed live"}
 
-        function verifyOTP() {
-            let otp = document.getElementById('otpInput').value.trim();
-            let phone = document.getElementById('phoneNumber').value.trim();
-            if(otp.length === 4) {
-                localStorage.setItem('ktx_phone', phone);
-                document.getElementById('uBadge').innerText = "+91 " + phone;
-                document.getElementById('authScreen').style.display = 'none';
-                document.getElementById('dashboardScreen').style.display = 'flex';
-            } else {
-                alert("Please enter a valid 4-digit OTP!");
-            }
-        }
+@app.get("/api/services", tags=["Marketplace"])
+async def list_services(
+    category: Optional[ServiceCategory] = None,
+    location: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    query = db.query(Service).filter(Service.is_active == True)
+    if category:
+        query = query.filter(Service.category == category)
+    if location:
+        query = query.filter(Service.location.ilike(f"%{location}%"))
+    
+    services = query.order_by(Service.created_at.desc()).all()
+    return {"count": len(services), "services": services}
 
-        function doLogout() {
-            localStorage.removeItem('ktx_phone');
-            document.getElementById('dashboardScreen').style.display = 'none';
-            document.getElementById('authScreen').style.display = 'flex';
-            document.getElementById('phoneGroup').style.display = 'block';
-            document.getElementById('otpGroup').style.display = 'none';
-            document.getElementById('phoneNumber').value = '';
-            document.getElementById('otpInput').value = '';
-        }
+@app.post("/api/bids", tags=["Marketplace"])
+async def place_bid(req: BidCreateRequest, db: Session = Depends(get_db)):
+    bid = Bid(
+        service_id=req.service_id,
+        bidder_id=req.bidder_id,
+        amount=req.amount,
+        proposal_text=req.proposal_text
+    )
+    db.add(bid)
+    db.commit()
+    return {"status": "success", "message": "Bid submitted to client"}
 
-        async function askAI(t) {
-            // Built-in seamless key handling so users never see an API key box
-            let k = "AIzaSyD" + "W_dummy_key_protected_ktx_hub_2026"; 
-            let qId = t==='fit'?'qFit':t==='fin'?'qFin':'qWeb';
-            let rId = t==='fit'?'rFit':t==='fin'?'rFin':'rWeb';
-            let query = document.getElementById(qId).value.trim();
-            if(!query){ alert("Please type a question!"); return; }
-            let box = document.getElementById(rId);
-            box.style.display = 'block'; box.innerHTML = 'Thinking...';
-            
-            try {
-                let res = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${k}`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({contents: [{parts: [{text: "Answer in professional English: " + query}]}]})
-                });
-                let d = await res.json();
-                if(d.error) {
-                    box.innerHTML = `<span style="color:#ff7b72">Notice: Please configure a valid live Gemini key if testing on custom domain.</span>`;
-                } else if(d.candidates) {
-                    box.innerHTML = d.candidates[0].content.parts[0].text.replace(/\n/g, '<br>');
-                } else {
-                    box.innerHTML = 'No response.';
-                }
-            } catch(err) { 
-                box.innerHTML = `<span style="color:#ff7b72">Error: ${err.message}</span>`; 
-            }
-        }
-    </script>
+@app.get("/api/admin/analytics", tags=["Admin Panel"])
+async def get_admin_metrics(admin_id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == admin_id).first()
+    if not user or user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Unauthorized: Admin access only")
+    
+    total_users = db.query(User).count()
+    total_services = db.query(Service).count()
+    total_bids = db.query(Bid).count()
+    
+    return {
+        "total_users": total_users,
+        "total_services": total_services,
+        "total_bids": total_bids,
+        "platform_status": "Optimal (Zero Lag)"
+    }
 
+# ==========================================
+# 5. SERVER ENTRYPOINT
+# ==========================================
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+    
