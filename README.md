@@ -3,170 +3,330 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KTX Hub | Fitness, Finance & Web Dev</title>
+    <title>KTX VIP Hub | Fitness, Finance & Tech</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         :root {
-            --primary-bg: #121212;
-            --card-bg: #1e1e1e;
-            --accent: #00e676;
-            --text-main: #ffffff;
-            --text-muted: #b0b0b0;
-            --border-color: #333333;
+            --bg-color: #0b0f19;
+            --card-bg: #131b2e;
+            --accent: #00ff66;
+            --accent-hover: #00cc52;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #1e293b;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--primary-bg);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 25px;
         }
 
-        .app-header {
+        .header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 35px;
         }
 
-        .app-header h1 {
+        .header h1 {
             color: var(--accent);
             margin: 0;
-            font-size: 32px;
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            text-shadow: 0 0 20px rgba(0, 255, 102, 0.2);
         }
 
-        .app-header p {
+        .header p {
             color: var(--text-muted);
-            margin: 5px 0 0 0;
-            font-size: 14px;
+            margin: 8px 0 0 0;
+            font-size: 15px;
         }
 
-        /* ग्लोबल API की इनपुट बार (सबसे ऊपर या कॉमन) */
-        .api-global-box {
-            max-width: 1200px;
-            margin: 0 auto 20px auto;
-            background-color: var(--card-bg);
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
+        /* VIP Global API Box */
+        .api-container {
+            max-width: 1280px;
+            margin: 0 auto 25px auto;
+            background: var(--card-bg);
+            padding: 18px 25px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
             display: flex;
-            gap: 10px;
             align-items: center;
+            gap: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
-        .api-global-box label {
-            font-size: 13px;
+
+        .api-container label {
+            font-size: 14px;
             color: var(--accent);
-            font-weight: bold;
+            font-weight: 700;
             white-space: nowrap;
         }
-        .api-global-box input {
+
+        .api-container input {
             flex: 1;
-            padding: 10px;
-            background-color: #2a2a2a;
-            border: 1px solid #444;
-            border-radius: 6px;
+            padding: 12px 15px;
+            background-color: #0b0f19;
+            border: 1px solid var(--border);
+            border-radius: 8px;
             color: var(--text-main);
-            font-size: 13px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
         }
 
-        /* 3-Column Layout */
-        .dashboard-grid {
+        .api-container input:focus {
+            border-color: var(--accent);
+        }
+
+        /* 3-Column VIP Dashboard Grid */
+        .grid-container {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 20px;
-            max-width: 1200px;
-            margin: 0 auto 20px auto;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            max-width: 1280px;
+            margin: 0 auto;
         }
 
-        .card {
+        .vip-card {
             background-color: var(--card-bg);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border-color);
-            box-sizing: border-box;
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid var(--border);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transition: transform 0.3s, border-color 0.3s;
         }
 
-        .card h2 {
-            margin: 0 0 15px 0;
-            font-size: 17px;
+        .vip-card:hover {
+            border-color: rgba(0, 255, 102, 0.4);
+            transform: translateY(-3px);
+        }
+
+        .vip-card h2 {
+            margin: 0 0 20px 0;
+            font-size: 20px;
             color: var(--accent);
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 12px;
+            font-weight: 700;
         }
 
         .input-group {
-            margin-bottom: 12px;
+            margin-bottom: 18px;
         }
 
         .input-group label {
             display: block;
-            margin-bottom: 5px;
-            font-size: 12px;
+            margin-bottom: 8px;
+            font-size: 13px;
             color: var(--text-muted);
+            font-weight: 600;
         }
 
         .input-group textarea {
             width: 100%;
-            padding: 10px;
-            background-color: #2a2a2a;
-            border: 1px solid #444;
-            border-radius: 6px;
+            padding: 14px;
+            background-color: #0b0f19;
+            border: 1px solid var(--border);
+            border-radius: 10px;
             color: var(--text-main);
-            font-size: 13px;
+            font-size: 14px;
             box-sizing: border-box;
             resize: vertical;
+            outline: none;
+            min-height: 100px;
+            transition: border-color 0.3s;
         }
 
-        .btn-primary {
+        .input-group textarea:focus {
+            border-color: var(--accent);
+        }
+
+        .btn-vip {
             width: 100%;
-            padding: 11px;
-            background-color: var(--accent);
-            color: #000000;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--accent), #00b347);
+            color: #0b0f19;
             border: none;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
             cursor: pointer;
+            transition: opacity 0.3s, transform 0.2s;
         }
 
-        .btn-primary:hover {
-            background-color: #00c853;
+        .btn-vip:hover {
+            opacity: 0.9;
+            transform: scale(1.01);
         }
 
-        .response-box {
-            margin-top: 12px;
-            padding: 10px;
-            background-color: #2a2a2a;
-            border-radius: 6px;
-            font-size: 13px;
-            line-height: 1.5;
+        .output-box {
+            margin-top: 18px;
+            padding: 15px;
+            background-color: #0b0f19;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.6;
             display: none;
+            border-left: 4px solid var(--accent);
             white-space: pre-wrap;
+            color: #e2e8f0;
         }
 
-        /* नीचे वाले सेक्शन (रिव्यू और प्रो सब्सक्रिप्शन) */
-        .bottom-sections {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+            .api-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>KTX VIP Hub</h1>
+        <p>Next-Gen AI Powered Fitness, Finance & Development Ecosystem</p>
+    </div>
+
+    <div class="api-container">
+        <label>Google Gemini API Key:</label>
+        <input type="password" id="globalApiKey" placeholder="अपनी फ्री API Key यहाँ दर्ज करें (एक बार डालें, ब्राउज़र में सुरक्षित सेव रहेगी)" oninput="saveApiKey()">
+    </div>
+
+    <div class="grid-container">
+        
+        <div class="vip-card">
+            <div>
+                <h2>💪 जिम & फिटनेस कोच</h2>
+                <div class="input-group">
+                    <label>अपनी फिटनेस या डाइट का सवाल पूछें:</label>
+                    <textarea id="fitQuery" placeholder="जैसे: बाइसेप्स का साइज बढ़ाने के लिए सबसे बेहतरीन वर्कआउट क्या है?"></textarea>
+                </div>
+            </div>
+            <div>
+                <button class="btn-vip" onclick="askAI('fit')">सलाह प्राप्त करें</button>
+                <div id="fitResponse" class="output-box"></div>
+            </div>
+        </div>
+
+        <div class="vip-card">
+            <div>
+                <h2>💰 फाइनेंस & मनी मैनेजमेंट</h2>
+                <div class="input-group">
+                    <label>अपने पैसों या बचत से जुड़ा सवाल पूछें:</label>
+                    <textarea id="finQuery" placeholder="जैसे: महीने की कमाई से स्मार्ट तरीके से बचत कैसे करें?"></textarea>
+                </div>
+            </div>
+            <div>
+                <button class="btn-vip" onclick="askAI('fin')">सलाह प्राप्त करें</button>
+                <div id="finResponse" class="output-box"></div>
+            </div>
+        </div>
+
+        <div class="vip-card">
+            <div>
+                <h2>💻 वेब डेवलपमेंट गुरु</h2>
+                <div class="input-group">
+                    <label>कोडिंग या वेबसाइट बनाने का सवाल पूछें:</label>
+                    <textarea id="webQuery" placeholder="जैसे: HTML और CSS का इस्तेमाल करके शानदार नेविगेशन बार कैसे बनाएं?"></textarea>
+                </div>
+            </div>
+            <div>
+                <button class="btn-vip" onclick="askAI('web')">कोडिंग सीखें</button>
+                <div id="webResponse" class="output-box"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // पेज खुलते ही लोकल स्टोरेज से API Key लोड करना
+        window.onload = function() {
+            const savedKey = localStorage.getItem('ktx_vip_api_key');
+            if (savedKey) {
+                document.getElementById('globalApiKey').value = savedKey;
+            }
+        };
+
+        function saveApiKey() {
+            const key = document.getElementById('globalApiKey').value.trim();
+            localStorage.setItem('ktx_vip_api_key', key);
         }
 
-        .review-card, .pro-card {
-            background-color: var(--card-bg);
-            border-radius: 15px;
-            padding: 20px;
-            border: 1px solid var(--border-color);
-            text-align: center;
-        }
+        async function askAI(type) {
+            const apiKey = document.getElementById('globalApiKey').value.trim();
+            if (!apiKey) {
+                alert("कृपया सबसे ऊपर दिए गए बॉक्स में अपनी Google Gemini API Key दर्ज करें!");
+                return;
+            }
 
-        .review-card h2, .pro-card h2 {
-            color: var(--accent);
+            let query = "";
+            let promptPrefix = "";
+            let responseDivId = "";
+
+            if (type === 'fit') {
+                query = document.getElementById('fitQuery').value.trim();
+                promptPrefix = "आप एक विश्वस्तरीय विशेषज्ञ फिटनेस और जिम कोच हैं। उपयोगकर्ता के प्रश्न का उत्तर हिंदी में, बहुत ही सटीक और असरदार तरीके से दें: ";
+                responseDivId = "fitResponse";
+            } else if (type === 'fin') {
+                query = document.getElementById('finQuery').value.trim();
+                promptPrefix = "आप एक प्रोफेशनल फाइनेंस और वेल्थ मैनेजमेंट एडवाइजर हैं। उपयोगकर्ता के प्रश्न का उत्तर हिंदी में, आसान और पेशेवर भाषा में दें: ";
+                responseDivId = "finResponse";
+            } else if (type === 'web') {
+                query = document.getElementById('webQuery').value.trim();
+                promptPrefix = "आप एक सीनियर फुल-स्टैक वेब डेवलपर और कोडिंग गुरु हैं। उपयोगकर्ता के प्रश्न का उत्तर हिंदी में, उदाहरण और कोड सहित आसान तरीके से दें: ";
+                responseDivId = "webResponse";
+            }
+
+            if (!query) {
+                alert("कृपया पहले इस सेक्शन में अपना सवाल लिखें!");
+                return;
+            }
+
+            const responseDiv = document.getElementById(responseDivId);
+            responseDiv.style.display = 'block';
+            responseDiv.innerHTML = 'AI कोच सोच रहे हैं...';
+
+            const url = `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: promptPrefix + query }] }]
+                    })
+                });
+
+                const data = await res.json();
+
+                if (data.error) {
+                    responseDiv.innerHTML = `<strong style="color:#ff4d4d;">एरर:</strong> ${data.error.message}`;
+                } else if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    responseDiv.innerHTML = data.candidates[0].content.parts[0].text.replace(/\n/g, '<br>');
+                } else {
+                    responseDiv.innerHTML = 'क्षमा करें, अभी उत्तर प्राप्त नहीं हो सका।';
+                }
+            } catch (err) {
+                responseDiv.innerHTML = `<strong style="color:#ff4d4d;">कनेक्शन एरर:</strong> ${err.message}`;
+            }
+        }
+    </script>
+</body>
+</html>            color: var(--accent);
             margin-top: 0;
             font-size: 18px;
         }
