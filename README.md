@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KTX Fitness | Your Personal AI Coach</title>
+    <title>KTX Hub | Fitness, Finance & Web Dev</title>
     <style>
         :root {
             --primary-bg: #121212;
@@ -19,33 +19,365 @@
             background-color: var(--primary-bg);
             color: var(--text-main);
             margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .main-container {
-            width: 100%;
-            max-width: 500px;
             padding: 20px;
-            box-sizing: border-box;
         }
 
         .app-header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .app-header h1 {
             color: var(--accent);
             margin: 0;
             font-size: 32px;
-            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1.5px;
         }
+
+        .app-header p {
+            color: var(--text-muted);
+            margin: 5px 0 0 0;
+            font-size: 14px;
+        }
+
+        /* ग्लोबल API की इनपुट बार (सबसे ऊपर या कॉमन) */
+        .api-global-box {
+            max-width: 1200px;
+            margin: 0 auto 20px auto;
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .api-global-box label {
+            font-size: 13px;
+            color: var(--accent);
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        .api-global-box input {
+            flex: 1;
+            padding: 10px;
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: var(--text-main);
+            font-size: 13px;
+        }
+
+        /* 3-Column Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto 20px auto;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card h2 {
+            margin: 0 0 15px 0;
+            font-size: 17px;
+            color: var(--accent);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .input-group textarea {
+            width: 100%;
+            padding: 10px;
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: var(--text-main);
+            font-size: 13px;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 11px;
+            background-color: var(--accent);
+            color: #000000;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background-color: #00c853;
+        }
+
+        .response-box {
+            margin-top: 12px;
+            padding: 10px;
+            background-color: #2a2a2a;
+            border-radius: 6px;
+            font-size: 13px;
+            line-height: 1.5;
+            display: none;
+            white-space: pre-wrap;
+        }
+
+        /* नीचे वाले सेक्शन (रिव्यू और प्रो सब्सक्रिप्शन) */
+        .bottom-sections {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .review-card, .pro-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .review-card h2, .pro-card h2 {
+            color: var(--accent);
+            margin-top: 0;
+            font-size: 18px;
+        }
+
+        .review-card textarea {
+            width: 100%;
+            max-width: 600px;
+            padding: 12px;
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: var(--text-main);
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        .pro-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #00e676, #00b0ff);
+            color: #000;
+            padding: 8px 20px;
+            font-weight: bold;
+            border-radius: 20px;
+            margin-top: 10px;
+            font-size: 15px;
+        }
+
+        /* मोबाइल रेस्पॉन्सिव (छोटी स्क्रीन पर एक के नीचे एक) */
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .api-global-box {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-header">
+        <h1>KTX Hub</h1>
+        <p>Fitness, Finance & Web Development AI Platform</p>
+    </div>
+
+    <!-- ग्लोबल API की बार (ताकि बार-बार न डालनी पड़े) -->
+    <div class="api-global-box">
+        <label>Google Gemini API Key:</label>
+        <input type="password" id="globalApiKey" placeholder="अपनी फ्री API Key यहाँ एक बार दर्ज करें (लोकल सेव होगी)" oninput="saveGlobalKey()">
+    </div>
+
+    <!-- 3-Column Dashboard: लेफ्ट (फिटनेस), बीच (फाइनेंस), राइट (वेब डेवलपमेंट) -->
+    <div class="dashboard-grid">
+        
+        <!-- 1. LEFT SIDE: जिम और फिटनेस -->
+        <div class="card">
+            <div>
+                <h2>💪 जिम & फिटनेस</h2>
+                <div class="input-group">
+                    <label>फिटनेस सवाल पूछें:</label>
+                    <textarea id="fitQuery" rows="3" placeholder="जैसे: चेस्ट मसल्स कैसे चौड़ी करें?"></textarea>
+                </div>
+            </div>
+            <div>
+                <button class="btn-primary" onclick="askAI('fit')">फिटनेस सलाह लें</button>
+                <div id="fitResponse" class="response-box"></div>
+            </div>
+        </div>
+
+        <!-- 2. MIDDLE: फाइनेंस ट्रैकर -->
+        <div class="card">
+            <div>
+                <h2>💰 फाइनेंस & बजट</h2>
+                <div class="input-group">
+                    <label>फाइनेंस सवाल पूछें:</label>
+                    <textarea id="finQuery" rows="3" placeholder="जैसे: सैलरी से महीने की बचत कैसे करें?"></textarea>
+                </div>
+            </div>
+            <div>
+                <button class="btn-primary" onclick="askAI('fin')">फाइनेंस सलाह लें</button>
+                <div id="finResponse" class="response-box"></div>
+            </div>
+        </div>
+
+        <!-- 3. RIGHT SIDE: वेबसाइट बनाना सीखें -->
+        <div class="card">
+            <div>
+                <h2>💻 वेब डेवलपमेंट</h2>
+                <div class="input-group">
+                    <label>कोडिंग सवाल पूछें:</label>
+                    <textarea id="webQuery" rows="3" placeholder="जैसे: HTML में इमेज कैसे लगाते हैं?"></textarea>
+                </div>
+            </div>
+            <div>
+                <button class="btn-primary" onclick="askAI('web')">कोडिंग सीखें</button>
+                <div id="webResponse" class="response-box"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- नीचे एकदम बीच में: रिव्यू सेक्शन -->
+    <div class="bottom-sections">
+        <div class="review-card">
+            <h2>⭐ अपना कीमती रिव्यू दें</h2>
+            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px;">हमें बताएं कि आपको यह ऐप कैसा लगा और इसमें क्या सुधार चाहिए:</p>
+            <textarea id="userReview" rows="3" placeholder="यहाँ अपना फीडबैक लिखें..."></textarea>
+            <br>
+            <button class="btn-primary" style="max-width: 200px; margin: 0 auto;" onclick="submitReview()">रिव्यू भेजें</button>
+            <div id="reviewMsg" style="color: var(--accent); margin-top: 10px; font-size: 13px; display: none;">धन्यवाद! आपका रिव्यू दर्ज कर लिया गया है।</div>
+        </div>
+
+        <!-- सबसे नीचे: प्रो सब्सक्रिप्शन -->
+        <div class="pro-card">
+            <h2>🚀 KTX Pro सब्सक्रिप्शन</h2>
+            <p style="color: var(--text-muted); font-size: 13px; margin: 5px 0;">अल्िमिटेड एआई फीचर्स, प्रीमियम कोर्सेज और बिना किसी रुकावट के एडवांस टूल्स का आनंद लें।</p>
+            <div class="pro-badge">शीघ्र आ रहा है (Coming Soon) - Free Forever for Now!</div>
+        </div>
+    </div>
+
+    <script>
+        // पेज लोड होते ही लोकल स्टोरेज से API Key फेच करना
+        window.onload = function() {
+            const savedKey = localStorage.getItem('ktx_global_api_key');
+            if (savedKey) {
+                document.getElementById('globalApiKey').value = savedKey;
+            }
+        };
+
+        function saveGlobalKey() {
+            const key = document.getElementById('globalApiKey').value.trim();
+            localStorage.setItem('ktx_global_api_key', key);
+        }
+
+        async function askAI(type) {
+            const apiKey = document.getElementById('globalApiKey').value.trim();
+            if (!apiKey) {
+                alert("कृपया सबसे ऊपर दिए गए बॉक्स में अपनी Google Gemini API Key दर्ज करें!");
+                return;
+            }
+
+            let query = "";
+            let promptPrefix = "";
+            let responseDivId = "";
+
+            if (type === 'fit') {
+                query = document.getElementById('fitQuery').value.trim();
+                promptPrefix = "आप एक विशेषज्ञ फिटनेस और जिम कोच हैं। हिंदी में सटीक और असरदार सलाह दें: ";
+                responseDivId = "fitResponse";
+            } else if (type === 'fin') {
+                query = document.getElementById('finQuery').value.trim();
+                promptPrefix = "आप एक प्रोफेशनल फाइनेंस और मनी मैनेजमेंट एडवाइजर हैं। हिंदी में आसान भाषा में सलाह दें: ";
+                responseDivId = "finResponse";
+            } else if (type === 'web') {
+                query = document.getElementById('webQuery').value.trim();
+                promptPrefix = "आप एक सीनियर वेब डेवलपर और कोडिंग गुरु हैं। हिंदी में उदाहरण सहित आसान तरीके से सिखाएं: ";
+                responseDivId = "webResponse";
+            }
+
+            if (!query) {
+                alert("कृपया इस सेक्शन में अपना सवाल लिखें!");
+                return;
+            }
+
+            const responseDiv = document.getElementById(responseDivId);
+            responseDiv.style.display = 'block';
+            responseDiv.innerHTML = 'कोच सोच रहे हैं...';
+
+            // सही और नए v1 मॉडल का यूआरएल (एरर-फ्री)
+            const url = `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: promptPrefix + query }] }]
+                    })
+                });
+
+                const data = await res.json();
+
+                if (data.error) {
+                    responseDiv.innerHTML = `एरर: ${data.error.message}`;
+                } else if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    responseDiv.innerHTML = data.candidates[0].content.parts[0].text.replace(/\n/g, '<br>');
+                } else {
+                    responseDiv.innerHTML = 'जवाब नहीं मिल पाया।';
+                }
+            } catch (err) {
+                responseDiv.innerHTML = `कनेक्शन एरर: ${err.message}`;
+            }
+        }
+
+        function submitReview() {
+            const reviewText = document.getElementById('userReview').value.trim();
+            if (!reviewText) {
+                alert("कृपया पहले अपना रिव्यू लिखें!");
+                return;
+            }
+            const msg = document.getElementById('reviewMsg');
+            msg.style.display = 'block';
+            document.getElementById('userReview').value = '';
+            setTimeout(() => {
+                msg.style.display = 'none';
+            }, 4000);
+        }
+    </script>
+</body>
+</html>        }
 
         .app-header p {
             color: var(--text-muted);
