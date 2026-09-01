@@ -28,33 +28,33 @@
             padding-bottom: 60px;
         }
 
-        /* 1. Terms & Conditions Modal (First Visit) */
+        /* 1. Terms Modal - Fail-safe */
         #termsModal {
             position: fixed;
             inset: 0;
-            background: rgba(10, 10, 12, 0.95);
+            background: rgba(10, 10, 12, 0.98);
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
+            z-index: 9999;
             padding: 15px;
         }
         .terms-card {
             background: var(--card-bg);
             border: 2px solid var(--royal-border);
             border-radius: 12px;
-            padding: 30px 25px;
+            padding: 25px;
             width: 100%;
             max-width: 440px;
             text-align: center;
-            box-shadow: 0 0 25px rgba(212, 175, 55, 0.25);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
         }
         .ktx-logo-big {
             font-size: 32px;
             font-weight: 900;
             color: var(--ktx-red);
             letter-spacing: 2px;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
             text-shadow: 0 0 10px rgba(255, 51, 51, 0.4);
         }
         .terms-sub {
@@ -73,8 +73,8 @@
             font-size: 12px;
             color: var(--text-muted);
             line-height: 1.6;
-            margin-bottom: 20px;
-            max-height: 150px;
+            margin-bottom: 18px;
+            max-height: 140px;
             overflow-y: auto;
         }
         .terms-box strong { color: var(--text-main); }
@@ -234,7 +234,7 @@
         .hero h1 span { color: var(--ktx-red); }
         .hero p { font-size: 13px; color: var(--text-muted); }
 
-        /* 6. Tool Category Tabs & Search */
+        /* 6. Filter & Search Bar */
         .filter-row {
             display: flex;
             gap: 10px;
@@ -337,7 +337,7 @@
             box-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
         }
 
-        /* 8. Interactive Modals */
+        /* 8. Modals */
         #toolModal, #congratsModal {
             display: none;
             position: fixed;
@@ -345,7 +345,7 @@
             background: rgba(0, 0, 0, 0.88);
             align-items: center;
             justify-content: center;
-            z-index: 2000;
+            z-index: 10000;
             padding: 20px;
         }
         .modal-box {
@@ -412,7 +412,6 @@
         }
         .modal-close:hover { color: #fff; border-color: #fff; }
 
-        /* Congratulations Bounce */
         .congrats-icon { font-size: 48px; margin-bottom: 10px; animation: bounce 1s infinite alternate; }
         .points-badge {
             display: inline-block;
@@ -440,25 +439,25 @@
 </head>
 <body>
 
-    <!-- 1. Terms and Conditions Acceptance Modal (Shows Once, No Login Needed) -->
+    <!-- 1. Terms & Conditions Modal -->
     <div id="termsModal">
         <div class="terms-card">
             <div class="ktx-logo-big">KTX</div>
             <div class="terms-sub">Student Utility & Tools Portal</div>
             
             <div class="terms-box">
-                <strong>📜 Terms & Conditions:</strong><br>
-                1. <strong>100% Free Access:</strong> All core student tools (Background Remover, Watermark Eraser, PDF Tools, Summarizer) require NO login & NO payment.<br>
-                2. <strong>Privacy Assured:</strong> All uploaded files and notes are processed instantly in your browser.<br>
-                3. <strong>VIP Members:</strong> High-bandwidth VIP tools consume Welcome Bonus Coins or optional Gemini API Keys.<br>
-                4. <strong>Fair Use:</strong> Please use the platform for educational & productivity purposes only.
+                <strong>📜 नियम व शर्तें (Terms & Conditions):</strong><br>
+                1. <strong>100% मुफ़्त टूल्स:</strong> Background Remover, PDF Tools, AI Summarizer बिना किसी शुल्क के उपयोग करें।<br>
+                2. <strong>पूर्ण गोपनीयता:</strong> आपकी सभी फाइल्स केवल आपके ब्राउज़र में सुरक्षित प्रोसेस होती हैं।<br>
+                3. <strong>VIP टूल्स:</strong> एडवांस्ड VIP टूल्स के लिए 100 वेलकम कॉइन्स या वैकल्पिक API Key का उपयोग कर सकते हैं।
             </div>
 
-            <button class="btn-blue-action" onclick="acceptTermsAndEnter()">I Agree & Enter Platform (YES) 👍</button>
+            <!-- Direct, Unstoppable Onclick Action -->
+            <button class="btn-blue-action" type="button" onclick="acceptTermsDirect()">I Agree & Enter Platform (YES) 👍</button>
         </div>
     </div>
 
-    <!-- 2. Congratulations Modal (Unlocks right after Terms Agree) -->
+    <!-- 2. Congratulations Modal -->
     <div id="congratsModal">
         <div class="modal-box">
             <div class="congrats-icon">🎉</div>
@@ -466,9 +465,9 @@
             <p style="color:#fff; font-size:14px; margin-top:5px;">Instant Access Unlocked</p>
             <div class="points-badge">+100 Welcome Coins Added! 🪙</div>
             <p style="font-size:12px; color:var(--text-muted); margin-bottom: 20px;">
-                आपके वॉलेट में <strong>100 कॉइन्स</strong> एक्टिव कर दिए गए हैं। इनका इस्तेमाल आप भविष्य में <strong>VIP Member Tools</strong> अनलॉक करने के लिए कर सकते हैं।
+                आपके वॉलेट में <strong>100 कॉइन्स</strong> एक्टिव कर दिए गए हैं। इनका इस्तेमाल आप <strong>VIP Member Tools</strong> के लिए कर सकते हैं।
             </p>
-            <button class="btn-blue-action" onclick="closeCongrats()">Explore All Tools 🚀</button>
+            <button class="btn-blue-action" type="button" onclick="closeCongratsDirect()">Explore All Tools 🚀</button>
         </div>
     </div>
 
@@ -479,8 +478,8 @@
             <div class="brand-sub">Student Utility Portal</div>
         </div>
         <div class="nav-actions">
-            <div class="wallet-pill" onclick="toggleProfile()">🪙 <span id="walletPts">100</span> Coins</div>
-            <button class="btn-profile-toggle" onclick="toggleProfile()">👤 Guest Student</button>
+            <div class="wallet-pill" onclick="toggleProfileDirect()">🪙 <span id="walletPts">100</span> Coins</div>
+            <button class="btn-profile-toggle" type="button" onclick="toggleProfileDirect()">👤 Guest Student</button>
         </div>
     </header>
 
@@ -508,7 +507,7 @@
                 <div class="stat-box"><span id="pWallet">100</span><label>VIP Coins</label></div>
                 <div class="stat-box"><span>10</span><label>Total Tools</label></div>
                 <div class="stat-box"><span>Gold Tier</span><label>Student Level</label></div>
-                <div class="stat-box"><span>Open Access</span><label>No Login Barrier</label></div>
+                <div class="stat-box"><span>Open Access</span><label>No Barrier</label></div>
             </div>
         </div>
 
@@ -520,8 +519,8 @@
 
         <!-- Search & Filter Bar -->
         <div class="filter-row">
-            <input type="text" id="toolSearch" class="search-tool" placeholder="Search any student tool (e.g. background, watermark, pdf, vip)..." oninput="filterTools()">
-            <select id="catSelect" class="category-select" onchange="filterTools()">
+            <input type="text" id="toolSearch" class="search-tool" placeholder="Search any student tool (e.g. background, watermark, pdf, vip)..." oninput="filterToolsDirect()">
+            <select id="catSelect" class="category-select" onchange="filterToolsDirect()">
                 <option value="ALL">All Categories</option>
                 <option value="FREE">Free Tools Only</option>
                 <option value="VIP">VIP Tools (Use Coins/API Key)</option>
@@ -549,7 +548,7 @@
             <div id="toolInputContainer">
                 <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
                     📁 Click to Upload Document / Photo or Drag & Drop Here
-                    <input type="file" id="fileInput" style="display:none" onchange="handleFileSelected()">
+                    <input type="file" id="fileInput" style="display:none" onchange="handleFileSelectedDirect()">
                 </div>
             </div>
 
@@ -559,5 +558,11 @@
                 ⚙️ Processing with Zero-Lag Engine...
             </div>
 
-            <button id="modalActionBtn" class="btn-blue-action" onclick="executeToolAction()">Start Processing</button>
-        
+            <button id="modalActionBtn" class="btn-blue-action" type="button" onclick="executeToolActionDirect()">Start Processing</button>
+            <button class="modal-close" type="button" onclick="closeModalDirect()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const STUDENT_TOOLS = [
+            { i
