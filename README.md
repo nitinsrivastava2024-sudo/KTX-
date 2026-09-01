@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KTX Hub | Enterprise AI Ecosystem</title>
+    <title>KTX Hub | खाटू टीम एक्सरसाइज</title>
     <style>
         * {
             box-sizing: border-box;
@@ -38,50 +38,68 @@
             height: 100vh;
             background: radial-gradient(circle at center, #161b22 0%, #0d1117 100%);
             padding: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
 
         .login-card {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            padding: 45px 35px;
+            padding: 40px 30px;
             width: 100%;
             max-width: 440px;
             box-shadow: 0 16px 40px rgba(0,0,0,0.6);
             text-align: center;
         }
 
-        /* Top Brand Logo inside Login Card */
-        .login-logo {
-            font-size: 32px;
+        .login-logo-img {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 15px auto;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), #1f6feb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            font-weight: 800;
+            color: #ffffff;
+            box-shadow: 0 0 20px rgba(88, 166, 255, 0.4);
+        }
+
+        .login-logo-title {
+            font-size: 28px;
             font-weight: 800;
             color: var(--accent);
-            margin-bottom: 5px;
+            margin-bottom: 2px;
             letter-spacing: 1px;
         }
 
         .login-subtitle {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .login-card h2 {
             color: var(--text-main);
-            margin-bottom: 8px;
-            font-size: 20px;
+            margin-bottom: 6px;
+            font-size: 18px;
         }
 
         .login-card p {
             color: var(--text-muted);
-            font-size: 13px;
-            margin-bottom: 25px;
+            font-size: 12px;
+            margin-bottom: 20px;
         }
 
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             text-align: left;
         }
 
@@ -89,18 +107,18 @@
             display: block;
             font-size: 12px;
             color: var(--text-main);
-            margin-bottom: 6px;
+            margin-bottom: 5px;
             font-weight: 600;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px;
+            padding: 11px;
             background-color: var(--bg-color);
             border: 1px solid var(--border-color);
             border-radius: 8px;
             color: var(--text-main);
-            font-size: 14px;
+            font-size: 13px;
             outline: none;
             transition: border-color 0.2s;
         }
@@ -140,7 +158,7 @@
         .navbar {
             background-color: var(--nav-bg);
             border-bottom: 1px solid var(--border-color);
-            padding: 12px 25px;
+            padding: 10px 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -155,7 +173,7 @@
             gap: 15px;
         }
 
-        /* 3-Line Hamburger Menu Button (Top Left) */
+        /* 3-Line Hamburger Menu Button */
         .menu-toggle {
             background: none;
             border: 1px solid var(--border-color);
@@ -181,24 +199,45 @@
             border-radius: 2px;
         }
 
-        /* Center Aligned KTX Hub Brand with Full Form */
+        /* Center Aligned KTX Hub with खाटू टीम एक्सरसाइज */
         .nav-center {
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
             text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-logo-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), #1f6feb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .nav-brand-text {
+            text-align: left;
         }
 
         .nav-brand-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 800;
             color: var(--text-main);
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             margin: 0;
+            line-height: 1.2;
         }
 
         .nav-brand-desc {
-            font-size: 10px;
+            font-size: 9px;
             color: var(--text-muted);
             letter-spacing: 0.5px;
             margin: 0;
@@ -236,13 +275,13 @@
             background-color: rgba(255, 123, 114, 0.1);
         }
 
-        /* Sidebar Dropdown Menu (Triggered by 3-Line Icon) */
+        /* Sidebar Dropdown Menu */
         .sidebar-menu {
             position: fixed;
-            top: 61px;
+            top: 57px;
             left: -280px;
             width: 280px;
-            height: calc(100vh - 61px);
+            height: calc(100vh - 57px);
             background-color: var(--card-bg);
             border-right: 1px solid var(--border-color);
             transition: left 0.3s ease;
@@ -256,7 +295,7 @@
         }
 
         .sidebar-menu h3 {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--accent);
             margin-top: 0;
             margin-bottom: 15px;
@@ -315,7 +354,7 @@
         }
 
         .vip-card h2 {
-            font-size: 16px;
+            font-size: 15px;
             color: var(--text-main);
             margin-top: 0;
             margin-bottom: 15px;
@@ -397,13 +436,13 @@
 
         .sub-info h3 {
             margin: 0 0 5px 0;
-            font-size: 16px;
+            font-size: 15px;
             color: var(--text-main);
         }
 
         .sub-info p {
             margin: 0;
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-muted);
         }
 
@@ -413,7 +452,7 @@
             border: 1px solid var(--accent);
             padding: 6px 14px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
         }
@@ -437,13 +476,13 @@
 </head>
 <body>
 
-    <!-- 1. MASSIVE LOGIN SCREEN -->
     <div id="loginScreen">
         <div class="login-card">
-            <div class="login-logo">KTX Hub</div>
-            <div class="login-subtitle">Kinetic Tech Xecutive</div>
+            <div class="login-logo-img">KTX</div>
+            <div class="login-logo-title">KTX Hub</div>
+            <div class="login-subtitle">खाटू टीम एक्सरसाइज</div>
             <h2>Enterprise Authentication</h2>
-            <p>Please enter your credentials to access the VIP AI Ecosystem.</p>
+            <p>Please enter your credentials to access the VIP ecosystem.</p>
             
             <div class="form-group">
                 <label>Full Name</label>
@@ -461,13 +500,10 @@
         </div>
     </div>
 
-    <!-- 2. MAIN DASHBOARD SCREEN -->
     <div id="dashboardScreen">
         
-        <!-- Top Navigation Bar -->
         <header class="navbar">
             <div class="nav-left">
-                <!-- Top-Left 3-Line Hamburger Menu -->
                 <button class="menu-toggle" onclick="toggleSidebar()" title="Toggle Menu">
                     <span></span>
                     <span></span>
@@ -475,10 +511,12 @@
                 </button>
             </div>
 
-            <!-- Center Aligned KTX Hub with Full Form -->
             <div class="nav-center">
-                <h1 class="nav-brand-title">KTX Hub</h1>
-                <p class="nav-brand-desc">Kinetic Tech Xecutive</p>
+                <div class="nav-logo-icon">KTX</div>
+                <div class="nav-brand-text">
+                    <h1 class="nav-brand-title">KTX Hub</h1>
+                    <p class="nav-brand-desc">खाटू टीम एक्सरसाइज</p>
+                </div>
             </div>
 
             <div class="nav-right">
@@ -487,23 +525,20 @@
             </div>
         </header>
 
-        <!-- Sidebar Menu (Facilities & Navigation) -->
         <div class="sidebar-menu" id="sidebarMenu">
             <h3>Facilities & Hub</h3>
             <ul class="sidebar-links">
                 <li onclick="alert('Fitness & Gym AI Coach is active.')">💪 Fitness & Gym Coach</li>
                 <li onclick="alert('Finance & Wealth Advisor is active.')">💰 Finance & Wealth</li>
                 <li onclick="alert('Web Engineering & Coding Mentor is active.')">💻 Web Engineering</li>
-                <li onclick="alert('KTX Pro Subscription Tier coming soon!')">🚀 Pro Membership (Coming Soon)</li>
+                <li onclick="alert('KTX Pro Subscription Tier coming soon! More features will be added here.')">🚀 Pro Membership (Coming Soon)</li>
                 <li onclick="alert('Secure Local Session Active.')">🔒 Security & Session</li>
             </ul>
         </div>
 
         <div class="main-container">
-            <!-- 3-Column Layout -->
             <div class="dashboard-grid">
                 
-                <!-- Column 1: Fitness -->
                 <div class="vip-card">
                     <div>
                         <h2>Fitness & Gym Coach</h2>
@@ -518,7 +553,6 @@
                     </div>
                 </div>
 
-                <!-- Column 2: Finance -->
                 <div class="vip-card">
                     <div>
                         <h2>Finance & Wealth</h2>
@@ -533,7 +567,6 @@
                     </div>
                 </div>
 
-                <!-- Column 3: Web Dev -->
                 <div class="vip-card">
                     <div>
                         <h2>Web Engineering</h2>
@@ -550,11 +583,10 @@
 
             </div>
 
-            <!-- Subscription / Pro Section -->
             <div class="sub-banner">
                 <div class="sub-info">
                     <h3>KTX Enterprise Pro Tier</h3>
-                    <p>Unlock high-throughput API channels, dedicated cloud storage, and priority models.</p>
+                    <p>Unlock high-throughput API channels, dedicated cloud storage, and upcoming subscription modules.</p>
                 </div>
                 <div>
                     <span class="badge-coming">Coming Soon</span>
@@ -565,9 +597,6 @@
     </div>
 
     <script>
-        // Master hardcoded working API key configuration to completely eliminate user key entry hassle
-        const MASTER_API_KEY = "AIzaSyD" + "W_dummy_key_protected_ktx_hub_2026"; // Built-in seamless routing
-
         window.onload = function() {
             const savedUser = localStorage.getItem('ktx_enterprise_username');
             if (savedUser) {
@@ -591,6 +620,7 @@
             localStorage.setItem('ktx_enterprise_email', email);
             
             document.getElementById('displayUser').innerText = name;
+            
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('dashboardScreen').style.display = 'flex';
         }
@@ -608,20 +638,9 @@
         }
 
         async function askAI(type) {
-            // Note: Users can plug their own key or use the built-in route. Let's prompt if they want to use standard AI Studio key or input one.
             let apiKey = localStorage.getItem('ktx_user_api_key');
             if (!apiKey) {
                 apiKey = prompt("Please enter your free Google Gemini API Key (get it free from aistudio.google.com):");
                 if (!apiKey) return;
                 localStorage.setItem('ktx_user_api_key', apiKey.trim());
             }
-
-            let query = "";
-            let promptPrefix = "";
-            let responseDivId = "";
-
-            if (type === 'fit') {
-                query = document.getElementById('fitQuery').value.trim();
-                promptPrefix = "You are an expert elite fitness coach. Provide a precise, professional English response: ";
-                responseDivId = "fitResponse";
-            } else if (type === 'fin') {
