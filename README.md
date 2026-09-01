@@ -3,14 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KTX Student Hub | खाटू टीम एक्सरसाइज</title>
+    <title>KTX Student Hub - Production Enterprise</title>
+    <!-- pdf-lib for in-browser real PDF operations (Zero Backend Lag) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
         
         :root {
             --bg: #0a0a0c;
             --card-bg: #121318;
-            --royal-border: #d4af37;
+            --card-hover: #191b22;
+            --royal-gold: #d4af37;
+            --royal-gold-glow: rgba(212, 175, 55, 0.25);
             --sub-border: #232530;
             --text-main: #f0f3f6;
             --text-muted: #8b949e;
@@ -25,180 +29,135 @@
             background-color: var(--bg);
             color: var(--text-main);
             min-height: 100vh;
-            padding-bottom: 60px;
+            padding-bottom: 70px;
+            overflow-x: hidden;
         }
 
-        /* 1. Terms Modal - Fail-safe */
-        #termsModal {
-            position: fixed;
-            inset: 0;
-            background: rgba(10, 10, 12, 0.98);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            padding: 15px;
-        }
-        .terms-card {
-            background: var(--card-bg);
-            border: 2px solid var(--royal-border);
-            border-radius: 12px;
-            padding: 25px;
-            width: 100%;
-            max-width: 440px;
-            text-align: center;
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
-        }
-        .ktx-logo-big {
-            font-size: 32px;
-            font-weight: 900;
-            color: var(--ktx-red);
-            letter-spacing: 2px;
-            margin-bottom: 4px;
-            text-shadow: 0 0 10px rgba(255, 51, 51, 0.4);
-        }
-        .terms-sub {
-            font-size: 11px;
-            color: var(--royal-border);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
-        }
-        .terms-box {
-            background: #000;
-            border: 1px solid var(--sub-border);
-            border-radius: 8px;
-            padding: 12px;
-            text-align: left;
-            font-size: 12px;
-            color: var(--text-muted);
-            line-height: 1.6;
-            margin-bottom: 18px;
-            max-height: 140px;
-            overflow-y: auto;
-        }
-        .terms-box strong { color: var(--text-main); }
-        .btn-blue-action {
-            width: 100%;
-            padding: 12px;
-            background: var(--btn-blue);
-            color: #ffffff;
-            border: none;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s ease;
-        }
-        .btn-blue-action:hover {
-            background: var(--btn-blue-hover);
-            box-shadow: 0 0 12px rgba(31, 111, 235, 0.6);
-        }
-
-        /* 2. Top Navigation Bar */
+        /* Top Navbar */
         .navbar {
             background: var(--card-bg);
-            border-bottom: 2px solid var(--royal-border);
-            padding: 12px 25px;
+            border-bottom: 2px solid var(--royal-gold);
+            padding: 14px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 500;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
         }
+        .brand-box { display: flex; align-items: center; gap: 12px; }
         .brand-title {
-            font-size: 20px;
+            font-size: 24px;
             font-weight: 900;
             color: var(--ktx-red);
-            text-shadow: 0 0 8px rgba(255, 51, 51, 0.3);
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(255, 51, 51, 0.4);
         }
         .brand-sub {
-            font-size: 9px;
-            color: var(--royal-border);
+            font-size: 10px;
+            color: var(--royal-gold);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
+            font-weight: 600;
         }
-        .nav-actions {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
+        .nav-actions { display: flex; gap: 12px; align-items: center; }
         .wallet-pill {
             background: #000;
-            border: 1.5px solid var(--royal-border);
-            padding: 6px 14px;
+            border: 1.5px solid var(--royal-gold);
+            padding: 7px 16px;
             border-radius: 20px;
             font-size: 13px;
             font-weight: bold;
-            color: var(--royal-border);
+            color: var(--royal-gold);
             cursor: pointer;
-            box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 0 10px var(--royal-gold-glow);
+            transition: all 0.2s ease;
         }
+        .wallet-pill:hover { background: var(--card-bg); border-color: #fff; color: #fff; }
         .btn-profile-toggle {
             background: transparent;
-            border: 1px solid var(--royal-border);
-            color: var(--royal-border);
-            padding: 6px 14px;
+            border: 1.5px solid var(--royal-gold);
+            color: var(--royal-gold);
+            padding: 7px 15px;
             border-radius: 6px;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: bold;
             cursor: pointer;
+            transition: 0.2s ease;
         }
-        .btn-profile-toggle:hover {
-            background: var(--royal-border);
-            color: #000;
-        }
+        .btn-profile-toggle:hover { background: var(--royal-gold); color: #000; }
 
-        /* 3. Main Container */
+        /* Main Wrapper */
         .container {
-            max-width: 1200px;
-            margin: 25px auto;
+            max-width: 1260px;
+            margin: 20px auto;
             padding: 0 20px;
         }
 
-        /* 4. Student Profile & Wallet Drawer */
+        /* Direct Welcome Banner (Open Door) */
+        .welcome-badge-box {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, rgba(18, 19, 24, 0.95) 100%);
+            border: 1.5px solid var(--royal-gold);
+            border-radius: 12px;
+            padding: 18px 22px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .wb-left h2 { font-size: 19px; color: var(--royal-gold); margin-bottom: 4px; font-weight: 800; }
+        .wb-left p { font-size: 13px; color: var(--text-main); }
+        .wb-pts {
+            background: #000;
+            border: 1.5px solid var(--royal-gold);
+            color: var(--royal-gold);
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-weight: 900;
+            font-size: 15px;
+            box-shadow: 0 0 10px var(--royal-gold-glow);
+        }
+
+        /* Profile & Details Drawer */
         #profileDrawer {
             display: none;
             background: var(--card-bg);
-            border: 2px solid var(--royal-border);
+            border: 2px solid var(--royal-gold);
             border-radius: 12px;
-            padding: 20px;
+            padding: 22px;
             margin-bottom: 25px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.8);
         }
         .profile-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--sub-border);
-            padding-bottom: 12px;
+            padding-bottom: 14px;
             margin-bottom: 15px;
         }
-        .profile-info h3 { color: #fff; font-size: 16px; }
-        .profile-info p { color: var(--royal-border); font-size: 12px; }
-        
+        .profile-header h3 { color: #fff; font-size: 17px; }
+        .profile-header p { color: var(--royal-gold); font-size: 12px; }
         .wallet-banner-box {
             background: #000;
-            border: 1.5px solid var(--royal-border);
+            border: 1px solid var(--royal-gold);
             border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
+            padding: 14px;
+            margin: 14px 0;
             text-align: left;
         }
-        .wallet-banner-box h4 {
-            color: var(--royal-border);
-            font-size: 14px;
-            margin-bottom: 6px;
-        }
-        .wallet-banner-box p {
-            color: var(--text-muted);
-            font-size: 12px;
-            line-height: 1.5;
-        }
+        .wallet-banner-box h4 { color: var(--royal-gold); font-size: 14px; margin-bottom: 5px; }
+        .wallet-banner-box p { color: var(--text-muted); font-size: 12px; line-height: 1.5; }
         .profile-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 12px;
             margin-top: 15px;
         }
@@ -206,97 +165,190 @@
             background: #000;
             border: 1px solid var(--sub-border);
             border-radius: 6px;
-            padding: 10px;
+            padding: 12px;
             text-align: center;
         }
-        .stat-box span {
-            font-size: 16px;
-            font-weight: bold;
-            color: var(--text-main);
-            display: block;
-        }
-        .stat-box label {
-            font-size: 10px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-        }
+        .stat-box span { font-size: 18px; font-weight: bold; color: var(--text-main); display: block; }
+        .stat-box label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; margin-top: 3px; display: block; }
 
-        /* 5. Hero Banner */
+        /* Hero */
         .hero {
-            background: radial-gradient(circle at top, #1c1a24 0%, var(--card-bg) 100%);
-            border: 1px solid var(--royal-border);
+            background: radial-gradient(circle at top, #1a1b24 0%, var(--card-bg) 100%);
+            border: 1.5px solid var(--royal-gold);
             border-radius: 12px;
-            padding: 25px;
+            padding: 26px;
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
         }
-        .hero h1 { font-size: 24px; color: #fff; margin-bottom: 6px; }
+        .hero h1 { font-size: 26px; color: #fff; margin-bottom: 6px; font-weight: 900; }
         .hero h1 span { color: var(--ktx-red); }
         .hero p { font-size: 13px; color: var(--text-muted); }
 
-        /* 6. Filter & Search Bar */
+        /* Search & Filters */
         .filter-row {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 22px;
             flex-wrap: wrap;
         }
         .search-tool {
             flex: 1;
-            min-width: 220px;
-            padding: 10px 15px;
+            min-width: 230px;
+            padding: 12px 16px;
             background: var(--card-bg);
-            border: 1px solid var(--royal-border);
-            border-radius: 6px;
+            border: 1.5px solid var(--royal-gold);
+            border-radius: 8px;
             color: #fff;
             font-size: 13px;
             outline: none;
         }
+        .search-tool:focus { box-shadow: 0 0 10px var(--royal-gold-glow); }
         .category-select {
-            padding: 10px 15px;
+            padding: 12px 16px;
             background: var(--card-bg);
-            border: 1px solid var(--royal-border);
-            border-radius: 6px;
+            border: 1.5px solid var(--royal-gold);
+            border-radius: 8px;
             color: #fff;
             font-size: 13px;
             outline: none;
+            cursor: pointer;
         }
 
-        /* 7. Student Tools Grid */
+        /* Real Interactive Studio View (No popups that fail, embedded direct panel) */
+        #interactiveStudio {
+            display: none;
+            background: var(--card-bg);
+            border: 2px solid var(--royal-gold);
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 30px var(--royal-gold-glow);
+            animation: fadeIn 0.25s ease-in-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+
+        .studio-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--sub-border);
+            padding-bottom: 12px;
+            margin-bottom: 18px;
+        }
+        .studio-top h2 { font-size: 20px; color: #fff; }
+        .studio-close-btn {
+            background: transparent;
+            border: 1px solid #ff3333;
+            color: #ff3333;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .studio-close-btn:hover { background: #ff3333; color: #fff; }
+
+        .studio-body { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media(max-width: 850px) { .studio-body { grid-template-columns: 1fr; } }
+
+        .studio-panel {
+            background: #000;
+            border: 1px solid var(--sub-border);
+            border-radius: 10px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .studio-panel h4 { color: var(--royal-gold); font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .custom-file-drop {
+            border: 2px dashed var(--royal-gold);
+            border-radius: 8px;
+            padding: 30px 15px;
+            text-align: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .custom-file-drop:hover { background: rgba(212, 175, 55, 0.05); color: #fff; }
+
+        .studio-textarea {
+            width: 100%;
+            height: 180px;
+            background: #0a0a0c;
+            border: 1px solid var(--royal-gold);
+            border-radius: 8px;
+            color: #fff;
+            padding: 12px;
+            font-size: 13px;
+            outline: none;
+            resize: vertical;
+        }
+        .studio-result-box {
+            width: 100%;
+            height: 180px;
+            background: #0a0a0c;
+            border: 1px solid var(--sub-border);
+            border-radius: 8px;
+            color: #3fb950;
+            padding: 12px;
+            font-size: 13px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+
+        .btn-action-trigger {
+            padding: 12px;
+            background: var(--btn-blue);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-action-trigger:hover { background: var(--btn-blue-hover); }
+        .btn-action-vip {
+            background: linear-gradient(135deg, #d4af37, #aa820a);
+            color: #000;
+        }
+        .btn-action-vip:hover { background: #ffd700; box-shadow: 0 0 14px var(--royal-gold-glow); }
+
+        /* Tools Grid */
         .tools-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
             gap: 20px;
         }
         .tool-card {
             background: var(--card-bg);
-            border: 1.5px solid var(--royal-border);
-            border-radius: 10px;
-            padding: 20px;
+            border: 1.5px solid var(--royal-gold);
+            border-radius: 12px;
+            padding: 22px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: all 0.2s ease;
         }
         .tool-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.15);
+            transform: translateY(-4px);
+            background: var(--card-hover);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.2);
         }
-        .tool-badges {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
+        .tool-badges { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .tool-tag {
             font-size: 10px;
             text-transform: uppercase;
-            color: var(--royal-border);
-            background: rgba(212, 175, 55, 0.1);
-            border: 1px solid var(--royal-border);
+            color: var(--royal-gold);
+            background: rgba(212, 175, 55, 0.12);
+            border: 1px solid var(--royal-gold);
             padding: 3px 8px;
             border-radius: 4px;
-            font-weight: bold;
+            font-weight: 700;
         }
         .vip-badge {
             font-size: 10px;
@@ -307,17 +359,17 @@
             font-weight: 900;
             text-transform: uppercase;
         }
-        .tool-card h3 { font-size: 16px; color: #ffffff; margin-bottom: 8px; }
+        .tool-card h3 { font-size: 17px; color: #fff; margin-bottom: 8px; font-weight: 700; }
         .tool-card p {
             font-size: 12px;
             color: var(--text-muted);
-            line-height: 1.5;
+            line-height: 1.55;
             margin-bottom: 20px;
             flex-grow: 1;
         }
         .card-btn {
             width: 100%;
-            padding: 10px;
+            padding: 11px;
             background: var(--btn-blue);
             color: #ffffff;
             border: none;
@@ -332,237 +384,132 @@
             background: linear-gradient(135deg, #d4af37, #aa820a);
             color: #000;
         }
-        .btn-vip-use:hover {
-            background: #ffd700;
-            box-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
-        }
+        .btn-vip-use:hover { background: #ffd700; box-shadow: 0 0 12px var(--royal-gold-glow); }
 
-        /* 8. Modals */
-        #toolModal, #congratsModal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.88);
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            padding: 20px;
-        }
-        .modal-box {
-            background: var(--card-bg);
-            border: 2px solid var(--royal-border);
-            border-radius: 12px;
-            padding: 25px;
-            width: 100%;
-            max-width: 480px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.9);
-            text-align: center;
-        }
-        .modal-box h2 { font-size: 18px; color: #fff; margin-bottom: 8px; }
-        .modal-box p { font-size: 12px; color: var(--text-muted); margin-bottom: 15px; }
-        
-        .interactive-area {
-            width: 100%;
-            padding: 12px;
-            background: #000;
-            border: 1px solid var(--royal-border);
-            border-radius: 6px;
-            color: #fff;
-            font-size: 13px;
-            min-height: 90px;
-            margin-bottom: 12px;
-            outline: none;
-            resize: vertical;
-            text-align: left;
-        }
-        .api-input-field {
-            width: 100%;
-            padding: 10px;
-            background: #000;
-            border: 1px solid var(--royal-border);
-            border-radius: 6px;
-            color: #fff;
-            font-size: 12px;
-            margin-bottom: 12px;
-            outline: none;
-            text-align: center;
-        }
-        .drop-zone {
-            border: 2px dashed var(--royal-border);
-            border-radius: 8px;
-            padding: 25px 15px;
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 13px;
-            margin-bottom: 15px;
-            background: #000;
-            cursor: pointer;
-        }
-        .drop-zone:hover { color: #fff; border-color: #fff; }
-        .modal-close {
-            background: transparent;
-            border: 1px solid var(--sub-border);
-            color: var(--text-muted);
-            padding: 8px 14px;
-            border-radius: 6px;
-            font-size: 12px;
-            cursor: pointer;
-            margin-top: 8px;
-            width: 100%;
-        }
-        .modal-close:hover { color: #fff; border-color: #fff; }
-
-        .congrats-icon { font-size: 48px; margin-bottom: 10px; animation: bounce 1s infinite alternate; }
-        .points-badge {
-            display: inline-block;
-            background: rgba(212, 175, 55, 0.15);
-            border: 1px solid var(--royal-border);
-            color: var(--royal-border);
-            font-size: 18px;
-            font-weight: 900;
-            padding: 8px 18px;
-            border-radius: 30px;
-            margin: 15px 0;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
-        }
-
-        @keyframes bounce {
-            from { transform: translateY(0); }
-            to { transform: translateY(-8px); }
-        }
-
-        @media(max-width: 600px) {
-            .navbar { padding: 10px 15px; }
-            .tools-grid { grid-template-columns: 1fr; }
-        }
+        /* Canvas element for client-side image processing */
+        #hiddenCanvas { display: none; }
     </style>
 </head>
 <body>
 
-    <!-- 1. Terms & Conditions Modal -->
-    <div id="termsModal">
-        <div class="terms-card">
-            <div class="ktx-logo-big">KTX</div>
-            <div class="terms-sub">Student Utility & Tools Portal</div>
-            
-            <div class="terms-box">
-                <strong>📜 नियम व शर्तें (Terms & Conditions):</strong><br>
-                1. <strong>100% मुफ़्त टूल्स:</strong> Background Remover, PDF Tools, AI Summarizer बिना किसी शुल्क के उपयोग करें।<br>
-                2. <strong>पूर्ण गोपनीयता:</strong> आपकी सभी फाइल्स केवल आपके ब्राउज़र में सुरक्षित प्रोसेस होती हैं।<br>
-                3. <strong>VIP टूल्स:</strong> एडवांस्ड VIP टूल्स के लिए 100 वेलकम कॉइन्स या वैकल्पिक API Key का उपयोग कर सकते हैं।
-            </div>
-
-            <!-- Direct, Unstoppable Onclick Action -->
-            <button class="btn-blue-action" type="button" onclick="acceptTermsDirect()">I Agree & Enter Platform (YES) 👍</button>
-        </div>
-    </div>
-
-    <!-- 2. Congratulations Modal -->
-    <div id="congratsModal">
-        <div class="modal-box">
-            <div class="congrats-icon">🎉</div>
-            <h2 style="color:var(--royal-border); font-size:22px;">Welcome to KTX!</h2>
-            <p style="color:#fff; font-size:14px; margin-top:5px;">Instant Access Unlocked</p>
-            <div class="points-badge">+100 Welcome Coins Added! 🪙</div>
-            <p style="font-size:12px; color:var(--text-muted); margin-bottom: 20px;">
-                आपके वॉलेट में <strong>100 कॉइन्स</strong> एक्टिव कर दिए गए हैं। इनका इस्तेमाल आप <strong>VIP Member Tools</strong> के लिए कर सकते हैं।
-            </p>
-            <button class="btn-blue-action" type="button" onclick="closeCongratsDirect()">Explore All Tools 🚀</button>
-        </div>
-    </div>
-
-    <!-- 3. Top Navigation Bar -->
+    <!-- Top Navigation -->
     <header class="navbar">
-        <div>
+        <div class="brand-box">
             <div class="brand-title">KTX</div>
             <div class="brand-sub">Student Utility Portal</div>
         </div>
         <div class="nav-actions">
-            <div class="wallet-pill" onclick="toggleProfileDirect()">🪙 <span id="walletPts">100</span> Coins</div>
-            <button class="btn-profile-toggle" type="button" onclick="toggleProfileDirect()">👤 Guest Student</button>
+            <div class="wallet-pill" onclick="toggleProfile()">🪙 <span id="walletPts">100</span> Coins</div>
+            <button class="btn-profile-toggle" type="button" onclick="toggleProfile()">👤 My Account</button>
         </div>
     </header>
 
     <div class="container">
 
+        <!-- Open Door Welcome Banner (No popups, 100% Guaranteed zero freeze) -->
+        <div class="welcome-badge-box">
+            <div class="wb-left">
+                <h2>🎉 Instant Access Active (No Barriers)</h2>
+                <p>सभी टूल्स सीधे आपके ब्राउज़र में अल्ट्रा-फास्ट काम करते हैं। 100 बोनस कॉइन्स एक्टिव हैं।</p>
+            </div>
+            <div class="wb-pts">🪙 100 Coins Loaded</div>
+        </div>
+
         <!-- User Profile & Wallet Details -->
         <div id="profileDrawer">
             <div class="profile-header">
-                <div class="profile-info">
-                    <h3>Guest Student</h3>
-                    <p>Open Access Mode (No Login Required)</p>
+                <div>
+                    <h3>Verified Student Member</h3>
+                    <p>Browser Session Protected (No Login Required)</p>
                 </div>
-                <span style="font-size:11px; background:rgba(35,134,54,0.2); border:1px solid var(--badge-green); color:#3fb950; padding:4px 10px; border-radius:12px; font-weight:bold;">Active Session</span>
+                <span style="font-size:11px; background:rgba(35,134,54,0.2); border:1px solid var(--badge-green); color:#3fb950; padding:5px 12px; border-radius:14px; font-weight:bold;">Active & Ready</span>
             </div>
 
-            <!-- Wallet Notice -->
             <div class="wallet-banner-box">
-                <h4>🪙 VIP Wallet: <span id="walletDetailPts" style="color:#fff;">100 Coins</span></h4>
+                <h4>🪙 VIP Wallet Balance: <span id="walletDetailPts" style="color:#fff;">100 Coins</span></h4>
                 <p>
-                    📌 <strong>उपयोग निर्देश:</strong> सभी <strong>Free Tools</strong> हमेशा 100% फ्री रहेंगे। यह 100 कॉइन्स केवल <strong>VIP Member Tools</strong> (जैसे 4K Image Enhancer, Deep Research Assistant) को प्रोसेस करने के लिए उपयोग किए जा सकते हैं।
+                    📌 <strong>नियम:</strong> बेसिक टूल्स हमेशा 100% फ्री रहेंगे। एडवांस्ड VIP टूल्स के लिए कॉइन्स का उपयोग कर सकते हैं।
                 </p>
             </div>
 
             <div class="profile-stats">
                 <div class="stat-box"><span id="pWallet">100</span><label>VIP Coins</label></div>
-                <div class="stat-box"><span>10</span><label>Total Tools</label></div>
-                <div class="stat-box"><span>Gold Tier</span><label>Student Level</label></div>
-                <div class="stat-box"><span>Open Access</span><label>No Barrier</label></div>
+                <div class="stat-box"><span id="toolsCount">10</span><label>Total Tools</label></div>
+                <div class="stat-box"><span>Fast WebAssembly</span><label>Engine</label></div>
+                <div class="stat-box"><span>0ms</span><label>Server Latency</label></div>
             </div>
         </div>
 
-        <!-- Hero Banner -->
+        <!-- Hero -->
         <div class="hero">
-            <h1>All-In-One <span>KTX</span> Student Toolbox</h1>
-            <p>Background Remover, Watermark Eraser, PDF Compressor & VIP AI Tools (Zero Barrier)</p>
+            <h1>All-In-One <span>KTX</span> Student Utility Hub</h1>
+            <p>Background Remover, Watermark Eraser, PDF Compressor & AI Assistants (Zero-Lag Engine)</p>
         </div>
 
-        <!-- Search & Filter Bar -->
+        <!-- Direct Embedded Interactive Studio (Replaces Glitchy Popups) -->
+        <div id="interactiveStudio">
+            <div class="studio-top">
+                <div>
+                    <h2 id="stTitle">Tool Name</h2>
+                    <p id="stDesc" style="font-size:12px; color:var(--text-muted); margin-top:4px;">Tool description</p>
+                </div>
+                <button class="studio-close-btn" onclick="closeStudio()">✖ Close Tool</button>
+            </div>
+
+            <div class="studio-body">
+                <!-- Left Input Panel -->
+                <div class="studio-panel">
+                    <h4>1. Input Source</h4>
+                    
+                    <div id="stFileArea" class="custom-file-drop" onclick="document.getElementById('actualFileInput').click()">
+                        <span id="stFileLabel">📁 Click to Select File (Image / PDF)</span>
+                        <input type="file" id="actualFileInput" style="display:none" onchange="onFilePicked(event)">
+                    </div>
+
+                    <div id="stTextArea" style="display:none;">
+                        <textarea id="actualTextInput" class="studio-textarea" placeholder="Type or paste your text / math equation / notes here..."></textarea>
+                    </div>
+
+                    <div id="stVipKeyArea" style="display:none;">
+                        <input type="password" id="userGeminiKey" class="search-tool" style="width:100%; font-size:12px;" placeholder="Optional: Enter Gemini API Key (Bypasses Coin Deduction)">
+                    </div>
+
+                    <button id="stActionBtn" class="btn-action-trigger" onclick="runToolProcessing()">Execute Tool (Instant)</button>
+                </div>
+
+                <!-- Right Output Panel -->
+                <div class="studio-panel">
+                    <h4>2. Live Output / Download</h4>
+                    <div id="stResultBox" class="studio-result-box">Ready for processing...</div>
+                    <button id="stDownloadBtn" class="btn-action-trigger" style="display:none; background:var(--badge-green);" onclick="triggerDownload()">⬇ Download Result File</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Row -->
         <div class="filter-row">
-            <input type="text" id="toolSearch" class="search-tool" placeholder="Search any student tool (e.g. background, watermark, pdf, vip)..." oninput="filterToolsDirect()">
-            <select id="catSelect" class="category-select" onchange="filterToolsDirect()">
+            <input type="text" id="toolSearch" class="search-tool" placeholder="Search any student tool (e.g. background, watermark, pdf, math)..." oninput="filterTools()">
+            <select id="catSelect" class="category-select" onchange="filterTools()">
                 <option value="ALL">All Categories</option>
                 <option value="FREE">Free Tools Only</option>
-                <option value="VIP">VIP Tools (Use Coins/API Key)</option>
+                <option value="VIP">VIP Tools (Use Coins/Key)</option>
                 <option value="Photo Tools">Photo & Image</option>
                 <option value="Document / PDF">Document & PDF</option>
                 <option value="AI Study">AI Study & Notes</option>
             </select>
         </div>
 
-        <!-- Student Tools Grid -->
+        <!-- Tools Grid -->
         <div class="tools-grid" id="toolsGrid"></div>
 
     </div>
 
-    <!-- 4. Tool Interactive Modal Window -->
-    <div id="toolModal">
-        <div class="modal-box">
-            <h2 id="mTitle">Tool Name</h2>
-            <p id="mDesc">Tool description goes here.</p>
-            
-            <div id="apiKeySection" style="display:none;">
-                <input type="password" id="userApiKey" class="api-input-field" placeholder="Paste Gemini API Key (Optional for VIP) / Uses Coins">
-            </div>
-
-            <div id="toolInputContainer">
-                <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
-                    📁 Click to Upload Document / Photo or Drag & Drop Here
-                    <input type="file" id="fileInput" style="display:none" onchange="handleFileSelectedDirect()">
-                </div>
-            </div>
-
-            <textarea id="toolTextArea" class="interactive-area" style="display:none;" placeholder="Type or paste your notes/question here..."></textarea>
-            
-            <div id="actionProgress" style="display:none; color:var(--royal-border); font-size:13px; text-align:center; margin-bottom:12px;">
-                ⚙️ Processing with Zero-Lag Engine...
-            </div>
-
-            <button id="modalActionBtn" class="btn-blue-action" type="button" onclick="executeToolActionDirect()">Start Processing</button>
-            <button class="modal-close" type="button" onclick="closeModalDirect()">Close</button>
-        </div>
-    </div>
+    <!-- Hidden canvas for true background & watermark graphic operations -->
+    <canvas id="hiddenCanvas"></canvas>
 
     <script>
-        const STUDENT_TOOLS = [
-            { i
+        // Master Catalog of High-Performance Tools
+        var MASTER_TOOLS = [
+            { id: 1, title: "Photo Background Remover", cat: "Photo Tools", isVip: false, cost: 0, tag: "Free AI", inputType: "image", desc: "Passport size फोटो या किसी भी इमेज का बैकग्राउंड पारदर्शी (Transparent PNG) करें।" },
+            { id: 2, title: "Watermark & Stamp Eraser", cat: "Photo Tools", isVip: false, cost: 0, tag: "Free Fix", inputType: "image", desc: "Notes, PDFs या तस्वीरों से अनचाहा वाटरमार्क और टेक्स्ट साफ करें।" },
+            { id: 3, title: "Ultra HD Image Enhancer & 4K Fix", cat: "Photo Tools", isVip: true, cost: 20,
